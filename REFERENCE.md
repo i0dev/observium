@@ -46,10 +46,12 @@ include observium
 
 The following parameters are available in the `observium` class:
 
+* [`auth_mechanism`](#auth_mechanism)
 * [`db_password`](#db_password)
 * [`rootdb_password`](#rootdb_password)
 * [`download_url`](#download_url)
 * [`installer_name`](#installer_name)
+* [`install_dir`](#install_dir)
 * [`db_host`](#db_host)
 * [`db_user`](#db_user)
 * [`db_charset`](#db_charset)
@@ -64,10 +66,15 @@ The following parameters are available in the `observium` class:
 * [`email_default`](#email_default)
 * [`email_from`](#email_from)
 * [`admin_password`](#admin_password)
+* [`apache_auth_require`](#apache_auth_require)
+* [`apache_access_log_file`](#apache_access_log_file)
 * [`apache_bind_ip`](#apache_bind_ip)
+* [`apache_custom_options`](#apache_custom_options)
+* [`apache_error_log_file`](#apache_error_log_file)
 * [`apache_hostname`](#apache_hostname)
 * [`apache_port`](#apache_port)
 * [`apache_sslport`](#apache_sslport)
+* [`custom_rewrite_lines`](#custom_rewrite_lines)
 * [`custom_ssl_cert`](#custom_ssl_cert)
 * [`custom_ssl_key`](#custom_ssl_key)
 * [`manage_repo`](#manage_repo)
@@ -81,6 +88,15 @@ The following parameters are available in the `observium` class:
 * [`repos`](#repos)
 * [`gpgkeys`](#gpgkeys)
 * [`observium_additional_conf`](#observium_additional_conf)
+
+##### <a name="auth_mechanism"></a>`auth_mechanism`
+
+Data type: `String`
+
+Auth mechanism to use, options are: ldap, http-auth, mysql
+please see documentation for config help
+
+default: mysql
 
 ##### <a name="db_password"></a>`db_password`
 
@@ -105,6 +121,12 @@ Url to the installer, IE http://observium.com/, can be a file path - default 'ht
 Data type: `String`
 
 Installer name, IE observium-installer.tar - default 'observium-community-latest.tar.gz'
+
+##### <a name="install_dir"></a>`install_dir`
+
+Data type: `String`
+
+Install directory for observium - default '/opt/observium'
 
 ##### <a name="db_host"></a>`db_host`
 
@@ -193,6 +215,20 @@ Data type: `String`
 
 Admin password for the default admin observium user - default 'changeme'
 
+##### <a name="apache_auth_require"></a>`apache_auth_require`
+
+Data type: `String`
+
+Apache auth require paramter - default 'all granted'
+
+##### <a name="apache_access_log_file"></a>`apache_access_log_file`
+
+Data type: `String`
+
+Apache access log file
+
+Default value: default apache log dir, typically `/var/log/apache2/{FQDN}_access_ssl.log`
+
 ##### <a name="apache_bind_ip"></a>`apache_bind_ip`
 
 Data type: `String`
@@ -200,6 +236,31 @@ Data type: `String`
 Bind IP address - default $facts['ipaddress']
 
 Default value: `$facts['ipaddress']`
+
+##### <a name="apache_custom_options"></a>`apache_custom_options`
+
+Data type: `String`
+
+Apache custom options, example could be changing auth type or adding Shibboleth support,
+
+To add Shibboleth support you would add the following to your hiera data
+
+```
+observium::apache_custom_options:
+  auth_type: "shibboleth"
+  shib_request_settings:
+    requireSession: 1
+```
+
+Default value: {}
+
+##### <a name="apache_error_log_file"></a>`apache_error_log_file`
+
+Data type: `String`
+
+Apache error log file
+
+Default value: default apache log dir, typically `/var/log/apache2/{FQDN}_error_ssl.log`
 
 ##### <a name="apache_hostname"></a>`apache_hostname`
 
@@ -220,6 +281,14 @@ Apache non SSL port - note if SSL is enabled this will have no effect - default 
 Data type: `String`
 
 Apache SSL port - note if SSL isn't enable this will have no effect - defautl '443'
+
+##### <a name="custom_rewrite_lines"></a>`custom_rewrite_lines`
+
+Data type: `Array[String]`
+
+Custom rewrite lines, note this will be added to the default rewrite conditions in .htaccess for the observium site
+
+Default value: []
 
 ##### <a name="custom_ssl_cert"></a>`custom_ssl_cert`
 
@@ -304,4 +373,3 @@ Data type: `Optional[Array]`
 Array of additional configurations options to add to /opt/observium/config.php
 
 Default value: ``undef``
-
